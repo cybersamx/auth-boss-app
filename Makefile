@@ -29,7 +29,7 @@ all: run
 
 .PHONY: run
 
-run: copy-files
+run: copy-files start-db-container
 	@-echo "$(BOLD)$(BLUE)Running $(APP_NAME)...$(RESET)"
 	@cd $(APP_SRC); go run .
 

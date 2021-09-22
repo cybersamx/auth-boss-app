@@ -1,0 +1,12 @@
+.DS_*
+*.log
+logs
+**/*.backup.*
+**/*.back.*
+
+node_modules
+bower_componets
+
+psd
+thumb
+sketch
