@@ -83,6 +83,8 @@ func (hh *HTMLHandlers) renderTemplate(ctx *gin.Context, tmplName string, data i
 	}
 }
 
+// TODO: Refactor too many if-else statements.
+
 func (hh *HTMLHandlers) SignIn() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		// GET  = displays the page.
@@ -115,20 +117,22 @@ func (hh *HTMLHandlers) SignIn() gin.HandlerFunc {
 				}
 
 				// Generate oauth2 object and save.
-				aTTL := time.Duration(hh.cfg.AccessTTL) * time.Second
-				rTTL := time.Duration(hh.cfg.RefreshTTL) * time.Second
-				otoken, err := auth.CreateOAuthToken(ctx, hh.ds, user.ID, hh.cfg.AccessSecret, aTTL, rTTL)
-				if err != nil {
-					msg.WriteString(fmt.Sprintf("Internal error: %s", err))
-				} else {
-					// Save session to the cookie.
-					session := UserSession{
-						OAuth2Token: *otoken,
-						UserID:      user.ID,
-					}
-					ss := NewSessionStore(hh.cfg.SessionSecret)
-					if err := ss.SetSession(ctx.Writer, ctx.Request, &session); err != nil {
+				if msg.Len() == 0 {
+					aTTL := time.Duration(hh.cfg.AccessTTL) * time.Second
+					rTTL := time.Duration(hh.cfg.RefreshTTL) * time.Second
+					otoken, err := auth.CreateOAuthToken(ctx, hh.ds, user.ID, hh.cfg.AccessSecret, aTTL, rTTL)
+					if err != nil {
 						msg.WriteString(fmt.Sprintf("Internal error: %s", err))
+					} else {
+						// Save session to the cookie.
+						session := UserSession{
+							OAuth2Token: *otoken,
+							UserID:      user.ID,
+						}
+						ss := NewSessionStore(hh.cfg.SessionSecret)
+						if err := ss.SetSession(ctx.Writer, ctx.Request, &session); err != nil {
+							msg.WriteString(fmt.Sprintf("Internal error: %s", err))
+						}
 					}
 				}
 			}

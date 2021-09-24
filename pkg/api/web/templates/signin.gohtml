@@ -20,7 +20,7 @@
             <i class="fas fa-lock fa-1x"></i>
           </button>
         </div>
-        <p class="fs-4 mt-3 text-center">Sign in</p>
+        <p id="form-title" class="fs-4 mt-3 text-center">Sign in</p>
         <div class="form-outline mb-4">
           <input type="text" id="username" name="username" class="form-control form-control-lg" />
           <label class="form-label" for="username">Username</label>
@@ -35,10 +35,10 @@
             Remember me
           </label>
         </div>
-        <div class="small text-center">
+        <div id="error-msg" class="small text-center">
           {{.Error}}
         </div>
-        <button type="submit" class="btn btn-primary btn-block mt-4" style="background-color: #1976d2;">SIGN IN</button>
+        <button id="btn-signin" type="submit" class="btn btn-primary btn-block mt-4" style="background-color: #1976d2;">SIGN IN</button>
         <div class="d-flex mt-3">
           <div class="text-left flex-fill p-2 small">
             <a href="#!">Forgot password?</a>

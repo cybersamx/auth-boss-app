@@ -2,11 +2,13 @@
 // eslint-disable-next-line no-redeclare
 /* global beforeEach, describe, expect, it, page */
 
+const { hostUrl } = require('../args');
+
 const timeout = 15 * 1000; // timeout in milliseconds
 
 describe('The sign-in flow', () => {
   beforeEach(async () => {
-    await page.goto('http://localhost:8080', {
+    await page.goto(hostUrl, {
       waitUntil: 'networkidle2',
     });
   });
@@ -18,15 +20,22 @@ describe('The sign-in flow', () => {
       password: 'mypassword',
     });
 
+    // Reusable promises.
+    const expectSignIn = expect(page).toMatchElement('p#form-title', { text: 'Sign in' });
+    const waitForNav = page.waitForNavigation({ waitUntil: 'networkidle2' });
+
     // Submit the form and redirect to a protected page.
+    await expectSignIn;
     await expect(page).toClick('button', { text: 'SIGN IN', delay: 25 });
-    await page.waitForNavigation({ waitUntil: 'networkidle2' });
+    await waitForNav;
     await expect(page.url()).toContain('/profile');
 
     // Sign out.
-    await expect(page).toClick('button', { text: 'SIGN OUT', delay: 25 });
-    await page.waitForNavigation({ waitUntil: 'networkidle2' });
-    await expect(page).toMatch('Sign in');
+    await expect(page).toClick('button#btn-signout', { text: 'SIGN OUT', delay: 25 });
+
+    // Back to the sign-in page.
+    await waitForNav;
+    await expectSignIn;
   }, timeout);
 
   it('should not sign in with an invalid username', async () => {
@@ -36,10 +45,10 @@ describe('The sign-in flow', () => {
       password: 'mypassword',
     });
 
-    // Submit the form and redirect to a protected page.
+    // Submit the form and expect error message.
     await expect(page).toClick('button', { text: 'SIGN IN', delay: 25 });
-    // Wait till we get the expected status code. Otherwise it will timeout and fail.
-    await page.waitForResponse((res) => res.status() === 500);
+    await page.waitForNavigation({ waitUntil: 'networkidle2' });
+    await expect(page).toMatchElement('div#error-msg', { text: 'User not found' });
   }, timeout);
 
   it('should not sign in with an invalid password', async () => {
@@ -49,9 +58,9 @@ describe('The sign-in flow', () => {
       password: 'password123',
     });
 
-    // Submit the form and redirect to a protected page.
+    // Submit the form and expect error message.
     await expect(page).toClick('button', { text: 'SIGN IN', delay: 25 });
-    // Wait till we get the expected status code. Otherwise it will timeout and fail.
-    await page.waitForResponse((res) => res.status() === 500);
+    await page.waitForNavigation({ waitUntil: 'networkidle2' });
+    await expect(page).toMatchElement('div#error-msg', { text: 'Invalid credentials' });
   }, timeout);
 });

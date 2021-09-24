@@ -18,12 +18,15 @@ type UserSession struct {
 	UserID      string
 }
 
+// TODO: For some reason setting cookieSecure true is causing headless e2e tests in Docker container to fail. Add TLS?
+
 const (
 	cookieName     = "session"
 	cookiePath     = "/"
 	cookieMaxAge   = 14 * 24 * 60 * 60
-	cookieSecure   = true
+	cookieSecure   = false
 	cookieHTTPOnly = true
+	cookieSameSite = http.SameSiteDefaultMode
 	keyUserSession = "payload"
 )
 
@@ -55,7 +58,7 @@ func NewSessionStore(key string) *SessionStore {
 		MaxAge:   cookieMaxAge,
 		Secure:   cookieSecure,
 		HttpOnly: cookieHTTPOnly,
-		SameSite: 0,
+		SameSite: cookieSameSite,
 	}
 
 	return &SessionStore{
@@ -65,8 +68,9 @@ func NewSessionStore(key string) *SessionStore {
 
 func (ss *SessionStore) SetSession(w http.ResponseWriter, r *http.Request, us *UserSession) error {
 	session, err := ss.store.Get(r, cookieName)
-	if err != nil {
+	if err != nil || session == nil {
 		// If we have trouble getting the cookie, then remove the cookie.
+		// TODO: Rename this function.
 		removeSessionCookie(w, cookieName)
 	}
 
