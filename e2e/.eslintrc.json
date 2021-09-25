@@ -4,6 +4,9 @@
   "parserOptions": {
     "ecmaVersion": 6
   },
+  "rules": {
+    "no-trailing-spaces": ["error", { "skipBlankLines":  true }]
+  },
   "plugins": ["prettier"],
   "env": {
     "es6": true,

@@ -2,9 +2,7 @@
 // eslint-disable-next-line no-redeclare
 /* global beforeEach, describe, expect, it, page */
 
-const { hostUrl } = require('../args');
-
-const timeout = 15 * 1000; // timeout in milliseconds
+const { hostUrl, timeout } = require('../args');
 
 describe('The sign-in flow', () => {
   beforeEach(async () => {
@@ -26,12 +24,12 @@ describe('The sign-in flow', () => {
 
     // Submit the form and redirect to a protected page.
     await expectSignIn;
-    await expect(page).toClick('button', { text: 'SIGN IN', delay: 25 });
+    await expect(page).toClick('button#btn-signin', { delay: 25 });
     await waitForNav;
     await expect(page.url()).toContain('/profile');
 
     // Sign out.
-    await expect(page).toClick('button#btn-signout', { text: 'SIGN OUT', delay: 25 });
+    await expect(page).toClick('button#btn-signout', { delay: 25 });
 
     // Back to the sign-in page.
     await waitForNav;
@@ -46,7 +44,7 @@ describe('The sign-in flow', () => {
     });
 
     // Submit the form and expect error message.
-    await expect(page).toClick('button', { text: 'SIGN IN', delay: 25 });
+    await expect(page).toClick('button#btn-signin', { delay: 25 });
     await page.waitForNavigation({ waitUntil: 'networkidle2' });
     await expect(page).toMatchElement('div#error-msg', { text: 'User not found' });
   }, timeout);
@@ -59,7 +57,7 @@ describe('The sign-in flow', () => {
     });
 
     // Submit the form and expect error message.
-    await expect(page).toClick('button', { text: 'SIGN IN', delay: 25 });
+    await expect(page).toClick('button#btn-signin', { delay: 25 });
     await page.waitForNavigation({ waitUntil: 'networkidle2' });
     await expect(page).toMatchElement('div#error-msg', { text: 'Invalid credentials' });
   }, timeout);

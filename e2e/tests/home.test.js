@@ -2,9 +2,7 @@
 // eslint-disable-next-line no-redeclare
 /* global describe, expect, it, page */
 
-const { hostUrl } = require('../args');
-
-const timeout = 15 * 1000; // timeout in milliseconds
+const { hostUrl, timeout } = require('../args');
 
 describe('The home page', () => {
   it('should see a title', async () => {
