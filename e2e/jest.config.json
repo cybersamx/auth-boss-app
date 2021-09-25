@@ -1,0 +1,9 @@
+{
+  "clearMocks": true,
+  "preset": "jest-puppeteer",
+  "roots": ["tests"],
+  "globalSetup": "jest-environment-puppeteer/setup",
+  "globalTeardown": "jest-environment-puppeteer/teardown",
+  "testEnvironment": "jest-environment-puppeteer",
+  "setupFilesAfterEnv": ["expect-puppeteer"]
+}

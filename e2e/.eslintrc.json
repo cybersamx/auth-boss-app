@@ -1,0 +1,23 @@
+{
+  "extends": ["airbnb-base"],
+  "parser": "babel-eslint",
+  "parserOptions": {
+    "ecmaVersion": 6
+  },
+  "rules": {
+    "no-trailing-spaces": ["error", { "skipBlankLines":  true }]
+  },
+  "plugins": ["prettier"],
+  "env": {
+    "es6": true,
+    "jasmine": true,
+    "node": true,
+    "jest": true
+  },
+  "globals": {
+    "page": true,
+    "browser": true,
+    "context": true,
+    "jestPuppeteer": true
+  }
+}

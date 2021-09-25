@@ -15,7 +15,7 @@ services:
     container_name: mongo
     restart: on-failure
     ports:
-      - '27017:27017'
+      - 27017:27017
     environment:
       MONGO_INITDB_ROOT_USERNAME: root      # Admin username
       MONGO_INITDB_ROOT_PASSWORD: password  # Admin password
@@ -39,5 +39,29 @@ services:
     environment:
       - AX_PORT=8080
       - AX_MONGO_ADDR=mongodb://nobody:secrets@mongo:27017/authx
+    networks:
+      - default
+  authx-e2e:
+    build:
+      context: ../e2e
+    volumes:
+      - ./shell-scripts/wait-for-it.sh:/usr/src/app/wait-for-it.sh
+    stdin_open: true
+    tty: true
+    cap_add:
+      - SYS_ADMIN
+    image: cybersamx/authx-e2e
+    hostname: authx-e2e
+    container_name: authx-e2e
+    depends_on:
+      - authx
+    environment:
+      - AX_E2E_HOST_URL=http://authx:8080
+    command:
+      - ./wait-for-it.sh
+      - authx:8080
+      - --
+      - npm
+      - test
     networks:
       - default

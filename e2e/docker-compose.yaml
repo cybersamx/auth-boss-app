@@ -1,0 +1,18 @@
+version: '3.7'
+
+networks:
+  default:
+    name: authx-net
+    driver: bridge
+
+services:
+  authx-e2e:
+    build:
+      context: .
+    stdin_open: true
+    tty: true
+    cap_add:
+      - SYS_ADMIN
+    image: cybersamx/authx-e2e
+    networks:
+      - default
